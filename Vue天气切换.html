@@ -1,0 +1,97 @@
+<html>
+    <head>
+    <meta charset="utf-8">
+    <title>一周天气情况</title>
+    <style type="text/css">
+    *{margin: 0px;padding: 0px;}
+    #header{margin-left: 20px; margin-top:20px;width: 480px;height: 60px;background-color: #4F2;position:relative;}
+    li{list-style-type: none;}
+    span{ position: absolute; margin-top: 20px;margin-left: 180px;}
+    a{font-size:18px;text-align: center;margin:3px;}
+	a:link,a:visited{color: #A62020;padding: 4px 10px 4px 10px;background-color: #ecd8db;text-decoration: none;border-top: 1px solid #EEE;border-left: 1px solid #EEE;border-bottom: 1px solid #717171;border-right: 1px solid #717171;}
+	a:hover{color:#821818;padding: 5px 8px 3px 12px;background-color: #e2c4c9;border-top: 1px solid #717171;border-left: 1px solid #717171;border-bottom: 1px solid #EEE;border-right: 1px solid #EEE;}
+	#my_view{width: 800px;height: 700px; position: absolute; top:100px; margin:0 auto;position:absolute;}
+    #Citys li{float: left;margin-left: 5px;}
+    #Citys {margin:0 auto; background-color: #46F}
+    #weather{position: absolute; left: 50px;top:50px;}
+    </style>
+    </head>
+    <body>
+        <div id="header">
+        <span>请选择城市</span>
+        </div>
+        <div id="my_view">       
+
+	        <ul id="Citys">
+	        	<li><a href="#" v-on:click="addCD">成都市</a></li>
+	        	<li><a href="#" v-on:click="addMY">绵阳市</a></li>
+	        	<li><a href="#" v-on:click="addDY">德阳市</a></li>
+	        	<li><a href="#" v-on:click="addYA">雅安市</a></li>
+	        	<li><a href="#" v-on:click="addNC">南充市</a></li>
+	        	<li><a href="#" v-on:click="addXC">西昌市</a></li>
+	        </ul>
+	        <div id="weather">
+            <ul>
+                <li>{{info.city}}</li>
+                <li>{{"实时温度:"+info.now.tmp+"度"}}</li>  
+                <li><div v-for="one in info.daily_forecast">
+                    {{one.date}}==={{one.tmp.max +"~"+ one.tmp.min}}度
+                    </div>
+                </li>
+                <li></li>  
+            </ul>
+            </div>
+        </div>
+        <script src="http://cdn.bootcss.com/vue/1.0.15/vue.min.js"></script>
+        <script src="vue-resource.js"></script>
+        <script>
+
+        new Vue({
+            el: "#my_view", 
+            data:{
+                "info":{},
+                "cityid":""
+            },
+            methods:{
+                addCD:function () {
+                    this.cityid = "CN101270101";
+                    this.load();
+                    },
+                addMY:function () {
+                    this.cityid = "CN101270401";
+                    this.load();
+                    },
+                addDY:function () {
+                    this.cityid = "CN101272001";
+                    this.load();
+                    },
+                addYA:function () {
+                    this.cityid = "CN101271701";
+                    this.load();
+                    },
+                addNC:function () {
+                    this.cityid = "CN101270501";
+                    this.load();
+                    },                
+                addXC:function () {
+                    this.cityid = "CN101271610";
+                    this.load();
+                    },
+                load:function  () {
+                var _this = this;
+                    console.log(this)
+                      this.$http.get("https://api.heweather.com/x3/weather", 
+                        {cityid:this.cityid,key:"199bf25db4ac40f19b49f23134de703f"},
+                        function(data){
+                        console.log(data)
+                        var city = data["HeWeather data service 3.0"][0].basic.city;
+                        var now = data["HeWeather data service 3.0"][0].now;
+                        var daily_forecast = data["HeWeather data service 3.0"][0].daily_forecast;
+                        _this.$set('info',{city:city,now:now,daily_forecast:daily_forecast});
+                    });
+                }
+            }
+        });
+        </script>
+    </body>
+</html>
